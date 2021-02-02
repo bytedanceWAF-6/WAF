@@ -15,3 +15,5 @@ pw 123456
 cd /usr/local/nginx/sbin
 
 ./nginx
+
+# lua
