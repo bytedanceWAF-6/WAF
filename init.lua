@@ -146,23 +146,7 @@ function ua()
     end
     return false
 end
--- function body(data)
---     for _,rule in pairs(postrules) do
---         if rule ~="" and data~="" and ngxmatch(unescape(data),rule,"isjo") then
---             log('POST',ngx.var.request_uri,data,rule,'drop')
---             if ngx.var.request_uri == "/api/auth/sign-in" then
--- 		    ngx.header.content_type = "application/json;charset=utf-8"
--- 		    ngx.status = ngx.HTTP_FORBIDDEN
--- 		    ngx.say("{\"message\":\"illegal input\"}")
--- 		    ngx.exit(ngx.status)
--- 	    else
--- 	    	say_html()
--- 		end
---             return true
---         end
---     end
---     return false
--- end
+
 function cookie()
     local ck = ngx.var.http_cookie
     if CookieCheck and ck then
@@ -219,25 +203,3 @@ function get_boundary()
     return match(header, ";%s*boundary=([^\",;]+)")
 end
 
---function whiteip()
---    if next(ipWhitelist) ~= nil then
---        for _,ip in pairs(ipWhitelist) do
---            if getClientIp()==ip then
---                return true
---            end
---        end
---    end
---        return false
---end
---
---function blockip()
---     if next(ipBlocklist) ~= nil then
---         for _,ip in pairs(ipBlocklist) do
---             if getClientIp()==ip then
---                 ngx.exit(403)
---                 return true
---             end
---         end
---     end
---         return false
---end
