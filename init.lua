@@ -19,7 +19,7 @@ local optionIsOn = function (options) return options == "on" and true or false e
 rulepath = RulePath
 UrlDeny = optionIsOn(UrlDeny)
 PostCheck = optionIsOn(postMatch)
-CookieCheck = optionIsOn(cookieMatch)
+CookieCheck = optionIsOn(CookieMatch)
 WhiteCheck = optionIsOn(whiteModule)
 PathInfoFix = optionIsOn(PathInfoFix)
 attacklog = optionIsOn(attacklog)
@@ -47,11 +47,9 @@ function read_rule(var)
     return(t)
 end
 
-urlrules=read_rule('url')
 argsrules=read_rule('args')
 uarules=read_rule('user-agent')
 wturlrules=read_rule('whiteurl')
-ckrules=read_rule('cookie')
 
 
 function say_html()
@@ -119,20 +117,6 @@ function args()
     return false
 end
 
-
-function url()
-    if UrlDeny then
-        for _,rule in pairs(urlrules) do
-            if rule ~="" and ngxmatch(ngx.var.request_uri,rule,"isjo") then
-                log('GET',ngx.var.request_uri,"-",rule,'drop')
-                say_html()
-                return true
-            end
-        end
-    end
-    return false
-end
-
 function ua()
     local ua = ngx.var.http_user_agent
     if ua ~= nil then
@@ -147,19 +131,7 @@ function ua()
     return false
 end
 
-function cookie()
-    local ck = ngx.var.http_cookie
-    if CookieCheck and ck then
-        for _,rule in pairs(ckrules) do
-            if rule ~="" and ngxmatch(ck,rule,"isjo") then
-                log('Cookie',ngx.var.request_uri,"-",rule,'drop')
-                say_html()
-            return true
-            end
-        end
-    end
-    return false
-end
+
 
 function denycc()
     if CCDeny then
