@@ -273,10 +273,34 @@ if ngx.var.request_uri == "/api/auth/sign-in" then
 		return false
 end
 
---if whiteip() then
---elseif blockip() then
---elseif blackip() then
-	if blackip() then
+function urlandcookiesql()
+	res, err, errno, sqlState = db:query("select reg_expr from reg_match where reg_expr_name='sqlInjectionCommon' or reg_expr_name='file'")
+    if not res then
+        ngx.say("get rules failed")
+    	return
+    else
+    	local rres = {}
+    	for i,row in ipairs(res) do
+    		for _,rule in pairs(row) do
+    			table.insert(rres,rule)
+    		end
+    	end
+	for _,rule in pairs(rres) do
+            if rule ~="" and ngxmatch(ngx.var.request_uri,rule,"isjo") then
+                log('GET',ngx.var.request_uri,"-",rule,'drop')
+                say_html()
+                return true
+elseif rule ~="" and ngxmatch(ngx.var.http_cookie,rule,"isjo") then
+	log('Cookie',ngx.var.request_uri,"-",rule,'drop')
+                say_html()
+            return true
+            end
+        end
+ return false
+end
+end
+
+if blackip() then
 elseif denycc() then
 elseif ngx.var.http_Acunetix_Aspect then
     ngx.exit(444)
@@ -284,6 +308,8 @@ elseif ngx.var.http_X_Scan_Memo then
     ngx.exit(444)
 elseif whiteurl() then
 elseif ua() then
+elseif urlandcookiesql() then
+elseif args() then
 elseif url() then
 elseif args() then
 elseif cookie() then
